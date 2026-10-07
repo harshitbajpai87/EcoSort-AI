@@ -1,33 +1,39 @@
-# render.yaml — EcoSort AI backend deployment configuration for Render
-# Docs: https://render.com/docs/blueprint-spec
-
 services:
   - type: web
     name: ecosort-ai-backend
     runtime: python
-    rootDir: ecosort-ai/backend
+    rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/v1/health
+
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: ecosort-db
           property: connectionString
+
       - key: SECRET_KEY
         generateValue: true
+
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "1440"
+
       - key: REFRESH_TOKEN_EXPIRE_DAYS
         value: "30"
+
       - key: CORS_ORIGINS
-        sync: false   # set to your Vercel frontend URL in the Render dashboard
+        sync: false
+
       - key: IBM_WATSONX_APIKEY
-        sync: false   # optional — EcoChat works without it (local fallback)
+        sync: false
+
       - key: IBM_WATSONX_PROJECT_ID
         sync: false
+
       - key: IBM_WATSONX_URL
         value: "https://us-south.ml.cloud.ibm.com"
+
       - key: AUTH_RATE_LIMIT_PER_MINUTE
         value: "10"
 
